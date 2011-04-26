@@ -19,7 +19,8 @@ libs_dir = "_libs/"
 
 # Travis's additions:
 images_dir = "images/"
-PNG_COMPRESS = "/d/utils/SendToPng.bat"
+PNG_COMPRESS_BAT = "D:\\utils\\SendToPng.bat"
+png_compress = "#{libs_dir}png.bat #{PNG_COMPRESS_BAT} #{images_dir}"
 # see iisexpress.bat for more info
 # IIS Express http://www.microsoft.com/downloads/en/details.aspx?FamilyID=abc59783-89de-4adc-b770-0a720bb21deb
 port_num = "9010"
@@ -28,10 +29,10 @@ iis_express = "#{libs_dir}iisexpress.bat #{build_dir} #{port_num}"
 
 task :default => :server
 
-desc 'optimize all PNGs and JPGs'
+desc 'optimize all PNGs'
 task :optimize_images do
   # use custom PNG compress batch file
-  system "#{PNG_COMPRESS} #{build_dir}#{images}"
+  system "#{png_compress}"
 end
 
 desc 'Delete generated _site files'
