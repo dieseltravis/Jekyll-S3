@@ -13,8 +13,8 @@ build_dir = '_site/'
 cdn = ''
 bucket = ''
 sass_dir = "styles"
-COMPILER_JAR = "/d/utils/GoogleClosure/compiler.jar"
-COMPRESSOR_JAR = "~/Library/Google/compiler-latest/htmlcompressor-1.2.jar"
+COMPILER_JAR = "D:\\utils\\GoogleClosure\\compiler.jar"
+COMPRESSOR_JAR = "D:\\utils\\htmlcompressor\\htmlcompressor-1.2.jar"
 libs_dir = "_libs/"
 
 # Travis's additions:
