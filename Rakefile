@@ -19,7 +19,7 @@ images_dir = "images/"
 PNG_COMPRESS = "/d/utils/SendToPng.bat"
 # see iisexpress.bat for more info
 port_num = "9010"
-iis_express = "iisexpress.bat #{build_dir} #{port_num}"
+iis_express = "#{libs_dir}iisexpress.bat #{build_dir} #{port_num}"
 
 
 task :default => :server
