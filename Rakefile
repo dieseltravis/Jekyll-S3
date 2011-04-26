@@ -6,12 +6,15 @@
 # - google closure http://closure-compiler.googlecode.com/files/compiler-latest.zip
 # - thin (gem install thin)
 # - optipng (brew install optipng)
+# - s3cmd (brew install s3cmd, s3cmd --configure)
+# - htmlcompressor http://code.google.com/p/htmlcompressor/
 
 build_dir = '_site/'
 cdn = ''
-bucket = 'site-testing'
+bucket = ''
 sass_dir = "styles"
 COMPILER_JAR = "/d/utils/GoogleClosure/compiler.jar"
+COMPRESSOR_JAR = "~/Library/Google/compiler-latest/htmlcompressor-1.2.jar"
 libs_dir = "_libs/"
 
 # Travis's additions:
@@ -67,13 +70,19 @@ namespace 'build' do
     system "ruby #{libs_dir}version_static_content.rb #{build_dir} #{args.cdn}"
   end
   
-  task :testing => [:jekyll, :compass, :javascript_compile, :version_static_content]
+  desc 'compress all html'
+  task :html_compress do
+    system "ruby #{libs_dir}html_compress.rb #{build_dir} #{COMPRESSOR_JAR}"
+  end
+  
+  task :testing => [:jekyll, :compass, :javascript_compile, :version_static_content, :html_compress]
   
   # production build should gzip content and add the CDN
   task :production => [:jekyll] do
     Rake::Task['build:compass'].invoke('production', 'compressed')
     Rake::Task['build:javascript_compile'].invoke
     #Rake::Task['build:version_static_content'].invoke(cdn)
+    Rake::Task['build:html_compress'].invoke
     system "ruby #{libs_dir}gzip_content.rb #{build_dir}"
   end
   
