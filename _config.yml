@@ -1,1 +1,1 @@
-exclude: [ Rakefile, styles ]
+exclude: [ Rakefile, styles, readme.txt ]

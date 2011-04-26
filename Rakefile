@@ -21,6 +21,7 @@ libs_dir = "_libs/"
 images_dir = "images/"
 PNG_COMPRESS = "/d/utils/SendToPng.bat"
 # see iisexpress.bat for more info
+# IIS Express http://www.microsoft.com/downloads/en/details.aspx?FamilyID=abc59783-89de-4adc-b770-0a720bb21deb
 port_num = "9010"
 iis_express = "#{libs_dir}iisexpress.bat #{build_dir} #{port_num}"
 
