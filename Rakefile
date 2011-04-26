@@ -14,7 +14,7 @@ cdn = ''
 bucket = ''
 sass_dir = "styles"
 COMPILER_JAR = "D:\\utils\\GoogleClosure\\compiler.jar"
-COMPRESSOR_JAR = "D:\\utils\\htmlcompressor\\htmlcompressor-1.2.jar"
+COMPRESSOR_JAR = "D:\\utils\\htmlcompressor\\htmlcompressor-1.3.jar"
 libs_dir = "_libs/"
 
 # Travis's additions:
@@ -82,7 +82,7 @@ namespace 'build' do
   task :production => [:jekyll] do
     Rake::Task['build:compass'].invoke('production', 'compressed')
     Rake::Task['build:javascript_compile'].invoke
-    #Rake::Task['build:version_static_content'].invoke(cdn)
+    Rake::Task['build:version_static_content'].invoke(cdn)
     Rake::Task['build:html_compress'].invoke
     system "ruby #{libs_dir}gzip_content.rb #{build_dir}"
   end
