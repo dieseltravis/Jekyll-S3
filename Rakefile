@@ -73,17 +73,17 @@ namespace 'build' do
   task :production => [:jekyll] do
     Rake::Task['build:compass'].invoke('production', 'compressed')
     Rake::Task['build:javascript_compile'].invoke
-#    Rake::Task['build:version_static_content'].invoke(cdn)
+    #Rake::Task['build:version_static_content'].invoke(cdn)
     system "ruby #{libs_dir}gzip_content.rb #{build_dir}"
   end
   
 end
 
-#desc 'Build and deploy'
-#task :publish => 'build:production' do
+desc 'Build and deploy'
+task :publish => 'build:production' do
 #  puts "Publishing site to bucket #{bucket}"
 #  system "ruby #{libs_dir}aws_s3_sync.rb #{build_dir} #{bucket}"
-#end
+end
 
 def jekyll(opts = '')
   system 'jekyll ' + opts
