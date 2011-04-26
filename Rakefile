@@ -11,14 +11,23 @@ build_dir = '_site/'
 cdn = ''
 bucket = 'site-testing'
 sass_dir = "styles"
-COMPILER_JAR = "~/Library/Google/compiler-latest/compiler.jar"
+COMPILER_JAR = "/d/utils/GoogleClosure/compiler.jar"
 libs_dir = "_libs/"
+
+# Travis's additions:
+images_dir = "images/"
+PNG_COMPRESS = "/d/utils/SendToPng.bat"
+# see iisexpress.bat for more info
+port_num = "9010"
+iis_express = "iisexpress.bat #{build_dir} #{port_num}"
+
 
 task :default => :server
 
 desc 'optimize all PNGs and JPGs'
 task :optimize_images do
-  system "ruby #{libs_dir}optimize_images.rb #{build_dir}"
+  # use custom PNG compress batch file
+  system "#{PNG_COMPRESS} #{build_dir}#{images}"
 end
 
 desc 'Delete generated _site files'
@@ -28,7 +37,11 @@ end
 
 desc 'Start server with --auto'
 task :server => ['build:testing'] do
-  system "thin start -R #{libs_dir}thin.ru"
+  #  system "thin start -R #{libs_dir}thin.ru"
+  # Use IIS Express on windows:
+  system "#{iis_express}"
+  # launch browser to url
+  system "start http://localhost:#{port_num}/"
 end
 
 desc 'Build site with Jekyll'
@@ -60,17 +73,17 @@ namespace 'build' do
   task :production => [:jekyll] do
     Rake::Task['build:compass'].invoke('production', 'compressed')
     Rake::Task['build:javascript_compile'].invoke
-    Rake::Task['build:version_static_content'].invoke(cdn)
+#    Rake::Task['build:version_static_content'].invoke(cdn)
     system "ruby #{libs_dir}gzip_content.rb #{build_dir}"
   end
   
 end
 
-desc 'Build and deploy'
-task :publish => 'build:production' do
-  puts "Publishing site to bucket #{bucket}"
-  system "ruby #{libs_dir}aws_s3_sync.rb #{build_dir} #{bucket}"
-end
+#desc 'Build and deploy'
+#task :publish => 'build:production' do
+#  puts "Publishing site to bucket #{bucket}"
+#  system "ruby #{libs_dir}aws_s3_sync.rb #{build_dir} #{bucket}"
+#end
 
 def jekyll(opts = '')
   system 'jekyll ' + opts
