@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<!--[if lt IE 9]><html lang="en" manifest="/manifest.appcache" class="ie no-js{% if page.htmlclass %} {{page.htmlclass}}{% endif %}{% if page.redirect and page.nometaredirect != true %} redirect{% endif %}"><![endif]--> 
-<!--[if (gte IE 9)|!(IE)]><!--> <html lang="en" manifest="/manifest.appcache" class="no-js{% if page.htmlclass %} {{page.htmlclass}}{% endif %}{% if page.redirect and page.nometaredirect != true %} redirect{% endif %}"> <!--<![endif]-->
+<!--[if lt IE 9]><html lang="en" class="ie no-js{% if page.htmlclass %} {{page.htmlclass}}{% endif %}{% if page.redirect and page.nometaredirect != true %} redirect{% endif %}"><![endif]--> 
+<!--[if (gte IE 9)|!(IE)]><!--> <html lang="en" class="no-js{% if page.htmlclass %} {{page.htmlclass}}{% endif %}{% if page.redirect and page.nometaredirect != true %} redirect{% endif %}"> <!--<![endif]-->
 <head>
   <meta charset="utf-8" />
   <title>{{page.title}}{% if page.url != '/index.html' %} - [SITE TITLE]{% endif %}</title>
@@ -13,8 +13,8 @@
   <link rel="stylesheet" href="/css/main.css" type="text/css"/>
   {% content_for styles %}
   <link rel="shortcut icon" href="/images/favicon.ico" />
-  <!--[if IE 7]><link rel="stylesheet" href="styles/ie7.css" type="text/css"/><![endif]-->
-  <!--[if lt IE 9]><script src="scripts/html5ie.min.js" type="text/javascript"></script><![endif]-->
+  <!--[if IE 7]><link rel="stylesheet" href="/styles/ie7.css" type="text/css"/><![endif]-->
+  <!--[if lt IE 9]><script src="/scripts/html5ie.min.js" type="text/javascript"></script><![endif]-->
 </head>
 <body>
   <section>

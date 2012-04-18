@@ -1,45 +1,3 @@
-# ==== Installation
-# 
-#   1. bundle install --gemfile=_Gemfile (if bundler isn't installed: gem install bundler)
-#   2. Download Google Closure jar: 
-#      http://closure-compiler.googlecode.com/files/compiler-latest.zip
-#   3. Download htmlcompressor jar, place in same directory as Closure jar.
-#      http://code.google.com/p/htmlcompressor/
-#   4. Install optipng for optimizing PNGs (brew install optipng)
-#   5. Install s3cmd to upload to Amazon S3 (brew install s3cmd, s3cmd --configure)
-#
-# ==== Configuration
-#
-#   - change constants in Deploy class as appropriate for Amazon bucket name and server IP
-#   - if not using external directory, blank out EXTERNAL_DIR constant under Build class
-#
-# ==== Usage
-#
-#   Development mode, continually regenerates html and CSS:
-#     thor dev
-#
-#   Build and serve on local machine:
-#     thor build
-#
-#   Build and deploy to production:
-#     thor deploy
-#
-#   Specify SSH login:
-#     thor deploy -l=[SSH USER]
-#
-#   Specify different location for Google Closure:
-#     thor build --compiler=[COMPILER LOCATION]
-#
-#   Specify different location for htmlcompressor:
-#     thor build --compressor=[COMPRESSOR LOCATION]
-#
-#   List all tasks: 
-#     thor list
-#   
-#   Show help for one task: 
-#     thor help [TASK]
-#
-
 class Deploy < Thor
   CDN_URL = "" # include full domain (http://domain.net) without trailing slash
   BUCKET = ""
@@ -125,6 +83,7 @@ class Build < Thor
   CSS_DIR = "css"
   # anything in the external directory will not be uploaded when publishing. Before upload, it will be moved from the build_dir to a level up and prepended with _
   EXTERNAL_DIR = "external/"
+  IMAGES2X_DIR = "/2x"
   class_option :compiler, :default => windows? ? "D:\\utils\\Google\\compiler.jar" : "~/Library/Google/compiler-latest/compiler.jar"
   class_option :compressor, :default => windows? ? "D:\\utils\\Google\\htmlcompressor-1.5.2.jar" : "~/Library/Google/compiler-latest/htmlcompressor-1.5.2.jar"
   
@@ -159,6 +118,11 @@ class Build < Thor
   end
   end
   
+  desc "resize_2x_images", "Any png, jpg, or gif under a /2x directory will be automatically resized to 50% and saved in the directory above. For example, /images/2x/logo.png will get resized and created in /images/logo.png."
+  def resize_2x_images
+    system "ruby #{LIBS_DIR}resize_2x_images.rb #{BUILD_DIR} #{IMAGES2X_DIR}"
+  end
+  
   desc "clean", "cleans build directory and external directory, if provided", :hide => true
   # method_option :external_dir
   def clean
@@ -172,7 +136,6 @@ class Build < Thor
   
   desc "jekyll", "builds static site", :hide => true
   def jekyll
-    invoke :clean
     puts "building static site with jekyll"
     system "jekyll #{BUILD_DIR} --no-future"
   end
@@ -181,13 +144,13 @@ class Build < Thor
   # method_option :sass_dir, :default => "styles", :required => true
   def compass(environment = "development", output_style = "expanded")
     puts "compiling css with compass"
-    system "compass compile --sass-dir #{SASS_DIR} --css-dir #{BUILD_DIR}#{SASS_DIR} -e #{environment} -s #{output_style}"
+    system "compass compile --sass-dir #{SASS_DIR} --css-dir #{CSS_DIR} -e #{environment} -s #{output_style} --force"
   end
   
-  desc "javascript_compile", "uses Google Compiler to optimize javascript", :hide => true
+  desc "javascript_compile", "uses Uglifier to optimize javascript", :hide => true
   def javascript_compile
-    puts "optimizing JavaScript with Google Compiler"
-    system "ruby #{LIBS_DIR}javascript_compile.rb #{BUILD_DIR} #{options[:compiler]}"
+    puts "optimizing JavaScript with Uglifier"
+    system "ruby #{LIBS_DIR}javascript_compile.rb #{BUILD_DIR}"
   end
   
   desc "version_static_content", "version and replace static content", :hide => true
@@ -231,6 +194,7 @@ class Build < Thor
   
   desc "testing", "builds and prepares site for a testing environment"
   def testing
+    invoke :clean
     invoke :compass
     invoke :jekyll
     invoke :javascript_compile
@@ -257,6 +221,7 @@ class Build < Thor
   # for example, if you remove the [] for `invoke :jekyll, []`, you'll receive an error that the jekyll task was called incorrectly.
   desc "production", "builds and prepares site for a production environment"
   def production(cdn)
+    invoke :clean, []
     invoke :compass, ["production", "compressed"]
     invoke :jekyll, []
     invoke :javascript_compile, []
