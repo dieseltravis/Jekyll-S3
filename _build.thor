@@ -60,11 +60,11 @@ class Dev < Thor
     File.open(procfile, "w") {|file|
       file.puts "compass: compass watch --sass-dir #{Build.sass_dir} --css-dir #{Build.css_dir} -e development -s expanded"
       file.puts "jekyll: jekyll #{Build.build_dir} --auto"
-      if windows?
+      #if windows?
         file.puts "server: #{Build.libs_dir}iisexpress.bat #{Build.build_dir} #{options[:port]}"
-      else
-      file.puts "server: thin start -R #{Build.libs_dir}thin.ru -p #{options[:port]}"
-      end
+      #else
+      #file.puts "server: thin start -R #{Build.libs_dir}thin.ru -p #{options[:port]}"
+      #end
     }
     system "foreman start -f #{procfile}"
   end
@@ -73,9 +73,9 @@ end
 class Build < Thor  
   require 'rbconfig'
 
-  def windows?
-    RbConfig::CONFIG['host_os'] =~ /mswin|mingw|windows|cygwin/i
-  end
+  #def windows?
+  #  RbConfig::CONFIG['host_os'] =~ /mswin|mingw|windows|cygwin/i
+  #end
 
   BUILD_DIR = "_site/"
   LIBS_DIR = "_libs/"
@@ -84,8 +84,8 @@ class Build < Thor
   # anything in the external directory will not be uploaded when publishing. Before upload, it will be moved from the build_dir to a level up and prepended with _
   EXTERNAL_DIR = "external/"
   IMAGES2X_DIR = "/2x"
-  class_option :compiler, :default => windows? ? "D:\\utils\\Google\\compiler.jar" : "~/Library/Google/compiler-latest/compiler.jar"
-  class_option :compressor, :default => windows? ? "D:\\utils\\Google\\htmlcompressor-1.5.2.jar" : "~/Library/Google/compiler-latest/htmlcompressor-1.5.2.jar"
+  class_option :compiler, :default => "D:\\utils\\Google\\compiler.jar"
+  class_option :compressor, :default => "D:\\utils\\Google\\htmlcompressor-1.5.2.jar"
   
   default_task :server
   
@@ -111,11 +111,11 @@ class Build < Thor
   
   desc "optimize_images", "optimize all PNGs"
   def optimize_images
-    if windows?
+    #if windows?
 	  system "#{libs_dir}png.bat D:\\utils\\SendToPng.bat #{BUILD_DIR}images/"
-    else
-    system "ruby #{LIBS_DIR}optimize_images.rb #{BUILD_DIR}"
-  end
+    #else
+    #system "ruby #{LIBS_DIR}optimize_images.rb #{BUILD_DIR}"
+  #end
   end
   
   desc "resize_2x_images", "Any png, jpg, or gif under a /2x directory will be automatically resized to 50% and saved in the directory above. For example, /images/2x/logo.png will get resized and created in /images/logo.png."
@@ -208,13 +208,13 @@ class Build < Thor
   method_option :port, :aliases => "-p", :default => 3000
   def server
     invoke :testing
-    if windows?
+    #if windows?
       system "#{LIBS_DIR}iisexpress.bat #{BUILD_DIR} #{options[:port]}"
       # launch browser to url?
       #system "start http://localhost:#{options[:port]}/"
-    else
-    system "thin start -R #{LIBS_DIR}thin.ru -p #{options[:port]}"
-    end
+    #else
+    #system "thin start -R #{LIBS_DIR}thin.ru -p #{options[:port]}"
+    #end
   end
   
   # thor 0.14.6 has a bug that forces args to be defined for invoked tasks if the main task accepts an argument that isn't optional.
