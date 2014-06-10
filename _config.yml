@@ -1,2 +1,2 @@
-exclude: [ styles, README.md, LICENSE ]
+exclude: [ styles, README.md, LICENSE, Vagrantfile ]
 domain: 
