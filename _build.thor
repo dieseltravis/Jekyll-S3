@@ -85,7 +85,7 @@ class Build < Thor
   EXTERNAL_DIR = "external/"
   IMAGES2X_DIR = "/2x"
   class_option :compiler, :default => "D:\\utils\\Google\\compiler.jar"
-  class_option :compressor, :default => "D:\\utils\\Google\\htmlcompressor-1.5.2.jar"
+  class_option :compressor, :default => "D:\\utils\\Google\\htmlcompressor-1.5.3.jar"
   
   default_task :server
   
